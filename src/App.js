@@ -26,6 +26,8 @@ ChartJS.register(
 
 function App() {
 
+
+
   const chart = {
     labels: [],
     datasets: [
@@ -43,6 +45,23 @@ function App() {
   const [totalYears, setTotalYears] = useState("0");
   const [chartData, setChartData] = useState(chart);
   const [totalMonths, setTotalMonths] = useState(0);
+
+  async function addSavings(event) {
+    event.preventDefault();
+    await fetch("http://localhost:8080/savings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userId: 1,
+        income: annIncome,
+        expenses: annExpenses,
+        currentSavings: currSavings,
+        expectedReturn: expectedReturn
+      })
+    });
+  }
 
   function calcYears(e) {
     e.preventDefault();
@@ -107,7 +126,9 @@ function App() {
           <div className="flex gap-5">
       
             <div className="w-1/2 bg-boxbeige rounded p-3 shadow-xl">
-              <form onSubmit={e => calcYears(e)}>
+              <form onSubmit={e => {
+                                    calcYears(e);
+                                    addSavings(e);}}>
                 <div className="grid grid-cols-2">
                   <div>
                     <label htmlFor="annual_income" className="block mb-2 text-sm font-medium text-gray-900">Annual Income</label>
